@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ME – Semester 1 | LUMEO Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Phosphor Icons for Apple-like minimal icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <style>
+        /* Custom layout for subjects: 2 cols desktop/tablet, 1 col mobile, center-aligned */
+        #subject-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            /* dept-grid already provides gap and margin-bottom */
+        }
+
+        #subject-grid .glass-card {
+            flex: 0 0 calc(50% - 16px);
+            max-width: calc(50% - 16px);
+            margin: 0;
+            width: 100%;
+        }
+
+        @media (max-width: 600px) {
+            #subject-grid .glass-card {
+                flex: 0 0 100%;
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Soft Background Blobs for Glass Effect -->
+    <div class="bg-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="app-container" id="app-dashboard">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-left">
+                <p class="date">Tuesday, October 24</p>
+                <h1 class="greeting">Good Morning, Alex.</h1>
+            </div>
+            <div class="header-right">
+                <div class="search-bar">
+                    <i class="ph ph-magnifying-glass"></i>
+                    <input type="text" placeholder="Search courses, assignments...">
+                </div>
+                <div class="user-action-container">
+                    <!-- Default Login Icon -->
+                    <a href="login.html" class="login-action" id="login-action">
+                        <i class="ph ph-user-circle"></i>
+                    </a>
+
+                    <!-- Logged-in Profile -->
+                    <div class="profile-action" id="profile-action" style="display: none;">
+                        <div class="profile-pic" id="profile-pic">
+                            <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80"
+                                alt="Profile">
+                        </div>
+
+                        <!-- Dropdown Menu -->
+                        <div class="profile-dropdown" id="profile-dropdown">
+                            <button id="logout-btn">
+                                <i class="ph ph-sign-out"></i> Logout
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Dashboard Area -->
+        <main class="dashboard" id="dashboard">
+            <!-- Back navigation button replacing the dock -->
+            <div class="back-nav-container" style="display:flex; justify-content:flex-start; margin-bottom: 24px;">
+                <a href="index.html" class="back-btn"
+                    style="display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; background: rgba(255,255,255,0.5); backdrop-filter: blur(20px); border-radius: 100px; color: var(--text-main); font-weight: 500; text-decoration: none; box-shadow: 0 4px 12px rgba(0,0,0,0.05); transition: all 0.3s ease;">
+                    <i class="ph ph-arrow-left"></i> Back
+                </a>
+            </div>
+
+            <!-- Page Title -->
+            <div class="section-title" style="justify-content: center; text-align: center; margin-bottom: 48px;">
+                <h2 style="font-size: 2rem; color: #34C759;">ME – Semester 1</h2>
+            </div>
+
+            <!-- Subject Cards Grid Layout (Must ensure it uses ONLY index style rules, without triggering dynamic script replacement) -->
+<div class="dept-grid reveal-on-scroll" id="subject-grid">
+
+                <a href="mes1m1.html" style="text-decoration: none; color: inherit;" class="glass-card dept-card">
+                    <div class="dept-icon" style="background: #F3E5F5; color: #9C27B0;">
+                        <i class="ph ph-function"></i>
+                    </div>
+                    <div class="dept-info">
+                        <h3>Mathematics I</h3>
+                    </div>
+                </a>
+                <a href="mes1physics.html" style="text-decoration: none; color: inherit;" class="glass-card dept-card">
+                    <div class="dept-icon" style="background: #E8F2FF; color: #007AFF;">
+                        <i class="ph ph-atom"></i>
+                    </div>
+                    <div class="dept-info">
+                        <h3>Physics</h3>
+                    </div>
+                </a>
+                <a href="mes1chem.html" style="text-decoration: none; color: inherit;" class="glass-card dept-card">
+                    <div class="dept-icon" style="background: #FFF8E1; color: #FF9800;">
+                        <i class="ph ph-flask"></i>
+                    </div>
+                    <div class="dept-info">
+                        <h3>Chemistry</h3>
+                    </div>
+                </a>
+                <a href="mes1em.html" style="text-decoration: none; color: inherit;" class="glass-card dept-card">
+                    <div class="dept-icon" style="background: #FFF0ED; color: #FF3B30;">
+                        <i class="ph ph-nut"></i>
+                    </div>
+                    <div class="dept-info">
+                        <h3>Engineering Mechanics</h3>
+                    </div>
+                </a>
+                <a href="mes1intro.html" style="text-decoration: none; color: inherit;" class="glass-card dept-card">
+                    <div class="dept-icon" style="background: #EAF8ED; color: #34C759;">
+                        <i class="ph ph-buildings"></i>
+                    </div>
+                    <div class="dept-info">
+                        <h3>Introduction to Mechanical & Civil Engineering</h3>
+                    </div>
+                </a>
+                <a href="mes1python.html" style="text-decoration: none; color: inherit;" class="glass-card dept-card">
+                    <div class="dept-icon" style="background: #F3E5F5; color: #9C27B0;">
+                        <i class="ph ph-code"></i>
+                    </div>
+                    <div class="dept-info">
+                        <h3>Algorithmic Thinking with Python</h3>
+                    </div>
+                </a>
+                <a href="mes1workshop.html" style="text-decoration: none; color: inherit;" class="glass-card dept-card">
+                    <div class="dept-icon" style="background: #E8F2FF; color: #007AFF;">
+                        <i class="ph ph-hammer"></i>
+                    </div>
+                    <div class="dept-info">
+                        <h3>Engineering Workshop / Graphics</h3>
+                    </div>
+                </a>
+</div>
+                    </div>
+                    <div class="dept-info">
+                        <h3>Discrete Mathematical Structures</h3>
+                    </div>
+                </a>
+
+                <!-- Subject 2 -->
+                <a href="cses3ds.html" style="text-decoration: none; color: inherit;" class="glass-card dept-card">
+                    <div class="dept-icon" style="background: #E8F2FF; color: #007AFF;">
+                        <i class="ph ph-tree-structure"></i>
+                    </div>
+                    <div class="dept-info">
+                        <h3>Data Structures</h3>
+                    </div>
+                </a>
+
+                <!-- Subject 3 -->
+                <a href="cses3lsd.html" style="text-decoration: none; color: inherit;" class="glass-card dept-card">
+                    <div class="dept-icon" style="background: #FFF8E1; color: #FF9800;">
+                        <i class="ph ph-cpu"></i>
+                    </div>
+                    <div class="dept-info">
+                        <h3>Logic System Design</h3>
+                    </div>
+                </a>
+
+                <!-- Subject 4 -->
+                <a href="cses3java.html" style="text-decoration: none; color: inherit;" class="glass-card dept-card">
+                    <div class="dept-icon" style="background: #FFF0ED; color: #FF3B30;">
+                        <i class="ph ph-coffee"></i>
+                    </div>
+                    <div class="dept-info">
+                        <h3>Object Oriented Java</h3>
+                    </div>
+                </a>
+
+                <!-- Subject 5 -->
+                <a href="cses3se.html" style="text-decoration: none; color: inherit;" class="glass-card dept-card">
+                    <div class="dept-icon" style="background: #EAF8ED; color: #34C759;">
+                        <i class="ph ph-leaf"></i>
+                    </div>
+                    <div class="dept-info">
+                        <h3>Sustainable Engineering</h3>
+                    </div>
+                </a>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Script loading without triggering department override -->
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const grid = document.getElementById('subject-grid');
+            setTimeout(() => {
+                if (grid) grid.classList.add('visible');
+            }, 100);
+        });
+    </script>
+</body>
+
+</html>

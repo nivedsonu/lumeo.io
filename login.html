@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In - Premium E-Learning</title>
+    <link rel="stylesheet" href="login.css">
+    <!-- Phosphor Icons for Apple-like minimal icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+</head>
+
+<body>
+    <!-- Soft Background Gradients & Blobs for Glass Effect -->
+    <div class="bg-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <!-- Centered Login Container -->
+    <div class="login-container">
+        <div class="login-card glass-card">
+
+            <div class="logo-container">
+                <i class="ph-fill ph-student"></i>
+            </div>
+
+            <h1 class="login-title">Welcome Back</h1>
+            <p class="login-subtitle">Sign in to your e-learning dashboard</p>
+
+            <form class="login-form" id="login-form" action="#">
+                <div class="input-group">
+                    <label for="email">Apple ID or Email</label>
+                    <input type="email" id="email" placeholder="name@example.com" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" placeholder="••••••••" required>
+                </div>
+
+                <div class="form-actions">
+                    <a href="#" class="forgot-password">Forgot password?</a>
+                </div>
+
+                <button type="submit" class="sign-in-btn" id="login-btn">
+                    Sign In
+                    <i class="ph ph-arrow-right"></i>
+                </button>
+            </form>
+
+            <!-- OTP Verification Form (Hidden by default) -->
+            <form class="login-form" id="login-otp-form" action="#" style="display: none;">
+                <p style="text-align: center; color: var(--text-sec); margin-bottom: 24px;">Please enter your temporary
+                    verification code to proceed.</p>
+                <div class="input-group" style="margin-bottom: 32px">
+                    <label for="login-otp-input" style="text-align: center;">Verification Code</label>
+                    <input type="text" id="login-otp-input" placeholder="987654" maxlength="6"
+                        style="text-align: center; letter-spacing: 8px; font-size: 1.5rem; font-weight: bold;" required>
+                </div>
+
+                <button type="submit" class="sign-in-btn" id="verify-login-btn">
+                    Verify & Login
+                    <i class="ph ph-check-circle"></i>
+                </button>
+            </form>
+
+            <div class="login-footer">
+                <p>Don't have an account? <a href="register.html">Create yours now.</a></p>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Message Container -->
+    <div id="message-container"
+        style="position: fixed; top: 24px; left: 50%; transform: translateX(-50%); z-index: 1000; display: none; padding: 16px 24px; border-radius: 12px; font-weight: 500; font-size: 0.95rem; box-shadow: 0 8px 32px rgba(0,0,0,0.1); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.2); transition: all 0.3s ease;">
+    </div>
+
+    <!-- Login Logic -->
+    <script>
+        function showMessage(text, isError = false) {
+            const msg = document.getElementById('message-container');
+            msg.textContent = text;
+            msg.style.background = isError ? 'rgba(255, 59, 48, 0.9)' : 'rgba(52, 199, 89, 0.9)';
+            msg.style.color = 'white';
+            msg.style.display = 'block';
+            msg.style.opacity = '1';
+            msg.style.transform = 'translate(-50%, 0) scale(1)';
+
+            setTimeout(() => {
+                msg.style.opacity = '0';
+                msg.style.transform = 'translate(-50%, -10px) scale(0.95)';
+                setTimeout(() => msg.style.display = 'none', 300);
+            }, 3000);
+        }
+
+        let pendingLoginStudent = null;
+
+        // Handle Login Step 1
+        document.getElementById('login-form').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const emailInput = document.getElementById('email').value.trim();
+            const passwordInput = document.getElementById('password').value;
+
+            let registeredStudents = JSON.parse(localStorage.getItem("registeredStudents")) || [];
+
+            // Find student by email
+            const student = registeredStudents.find(s => s.email === emailInput);
+
+            if (!student) {
+                showMessage("Account not registered. Please create an account.", true);
+                return;
+            }
+
+            if (student.password !== passwordInput) {
+                showMessage("Incorrect password.", true);
+                return;
+            }
+
+            // Save pending student and switch to OTP form
+            pendingLoginStudent = student;
+
+            const btn = document.getElementById('login-btn');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="ph ph-spinner ph-spin" style="animation: spin 1s linear infinite;"></i> Processing...';
+            btn.disabled = true;
+
+            setTimeout(() => {
+                document.getElementById('login-form').style.display = 'none';
+                document.querySelector('.login-title').innerText = "Verify Login";
+                document.querySelector('.login-subtitle').innerText = "Enter the 6-digit access code";
+                document.getElementById('login-otp-form').style.display = 'block';
+            }, 800);
+        });
+
+        // Handle OTP Step 2
+        document.getElementById('login-otp-form').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const enteredOTP = document.getElementById('login-otp-input').value.trim();
+
+            if (enteredOTP !== "987654") {
+                showMessage("Invalid OTP. Please try again.", true);
+                return;
+            }
+
+            // Check if verified but not yet approved (Legacy support)
+            if (pendingLoginStudent.verified !== false && !pendingLoginStudent.approved) {
+                showMessage("Waiting for admin approval.", true);
+            } else if (!pendingLoginStudent.approved) {
+                showMessage("Waiting for admin approval.", true);
+            }
+
+            // Login successful
+            localStorage.setItem("loggedIn", "true");
+            localStorage.setItem("userEmail", pendingLoginStudent.email);
+            localStorage.setItem("userLoggedIn", "true"); // Maintained for backwards compatibility
+            localStorage.setItem("userName", pendingLoginStudent.name);
+            localStorage.setItem("username", pendingLoginStudent.name);
+
+            const btn = document.getElementById('verify-login-btn');
+            btn.innerHTML = '<i class="ph ph-spinner ph-spin" style="animation: spin 1s linear infinite;"></i> Authenticating...';
+            btn.disabled = true;
+
+            setTimeout(() => {
+                window.location.href = 'index.html'; // Redirect to dashboard
+            }, 1000);
+        });
+    </script>
+    <style>
+        @keyframes spin {
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</body>
+
+</html>

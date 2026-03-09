@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Premium E-Learning</title>
+    <link rel="stylesheet" href="login.css">
+    <!-- Phosphor Icons for Apple-like minimal icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <!-- EmailJS SDK -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+</head>
+
+<body>
+    <!-- Soft Background Gradients & Blobs for Glass Effect -->
+    <div class="bg-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <!-- Centered Register Container -->
+    <div class="login-container">
+        <div class="login-card glass-card">
+
+            <div class="logo-container">
+                <i class="ph-fill ph-student"></i>
+            </div>
+
+            <h1 class="login-title">Create Account</h1>
+            <p class="login-subtitle">Join the premium e-learning platform</p>
+
+            <form class="login-form" id="register-form" action="#">
+                <div class="input-group">
+                    <label for="fullname">Full Name</label>
+                    <input type="text" id="fullname" placeholder="Alex Johnson" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" placeholder="name@example.com" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" placeholder="••••••••" required>
+                </div>
+
+                <div class="input-group" style="margin-bottom: 32px">
+                    <label for="confirm-password">Confirm Password</label>
+                    <input type="password" id="confirm-password" placeholder="••••••••" required>
+                </div>
+
+                <button type="submit" class="sign-in-btn" id="register-btn">
+                    Register
+                    <i class="ph ph-arrow-right"></i>
+                </button>
+            </form>
+
+            <!-- OTP Verification Form (Hidden by default) -->
+            <form class="login-form" id="otp-form" action="#" style="display: none;">
+                <p style="text-align: center; color: var(--text-sec); margin-bottom: 24px;">Please enter your temporary
+                    verification code to proceed.</p>
+                <div class="input-group" style="margin-bottom: 32px">
+                    <label for="otp-input" style="text-align: center;">Verification Code</label>
+                    <input type="text" id="otp-input" placeholder="123456" maxlength="6"
+                        style="text-align: center; letter-spacing: 8px; font-size: 1.5rem; font-weight: bold;" required>
+                </div>
+
+                <button type="button" class="sign-in-btn" id="verify-btn" onclick="verifyOTP()">
+                    Verify Account
+                    <i class="ph ph-check-circle"></i>
+                </button>
+            </form>
+
+            <div class="login-footer">
+                <p>Already have an account? <a href="login.html">Sign In.</a></p>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Message Container -->
+    <div id="message-container"
+        style="position: fixed; top: 24px; left: 50%; transform: translateX(-50%); z-index: 1000; display: none; padding: 16px 24px; border-radius: 12px; font-weight: 500; font-size: 0.95rem; box-shadow: 0 8px 32px rgba(0,0,0,0.1); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.2); transition: all 0.3s ease;">
+    </div>
+
+    <!-- Registration & OTP Logic -->
+    <script>
+        // Init EmailJS with a valid actual configuration if available,
+        // or a placeholder config that catches the attempt.
+        // For actual production, replace these with real EmailJS tokens.
+        (function () {
+            emailjs.init({
+                publicKey: "YOUR_PUBLIC_KEY", // Placeholder
+            });
+        })();
+
+        let generatedOTP = null;
+        let pendingUser = null;
+
+        function showMessage(text, isError = false) {
+            const msg = document.getElementById('message-container');
+            msg.textContent = text;
+            msg.style.background = isError ? 'rgba(255, 59, 48, 0.9)' : 'rgba(52, 199, 89, 0.9)';
+            msg.style.color = 'white';
+            msg.style.display = 'block';
+            msg.style.opacity = '1';
+            msg.style.transform = 'translate(-50%, 0) scale(1)';
+
+            setTimeout(() => {
+                msg.style.opacity = '0';
+                msg.style.transform = 'translate(-50%, -10px) scale(0.95)';
+                setTimeout(() => msg.style.display = 'none', 300);
+            }, 3000);
+        }
+
+        // Handle Registration Step 1
+        document.getElementById('register-form').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const fullName = document.getElementById('fullname').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+
+            if (password !== confirmPassword) {
+                showMessage("Passwords do not match!", true);
+                return;
+            }
+
+            let registeredStudents = JSON.parse(localStorage.getItem("registeredStudents")) || [];
+            const emailExists = registeredStudents.some(student => student.email === email);
+            if (emailExists) {
+                showMessage("This email is already registered.", true);
+                return;
+            }
+
+            // Static testing OTP instead of random generation
+            generatedOTP = "987654";
+            console.log(`[TESTING] Using static OTP: ${generatedOTP}`);
+
+            // Store pending user temporarily
+            pendingUser = {
+                name: fullName,
+                email: email,
+                password: password,
+                verified: true,
+                approvedCourses: []
+            };
+
+            const btn = document.getElementById('register-btn');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="ph ph-spinner ph-spin" style="animation: spin 1s linear infinite;"></i> Processing...';
+            btn.disabled = true;
+
+            // Immediately show OTP form (no EmailJS send)
+            setTimeout(() => {
+                // Switch UI Forms
+                document.getElementById('register-form').style.display = 'none';
+                document.querySelector('.login-title').innerText = "Verify Email";
+                document.querySelector('.login-subtitle').innerText = "Enter the access code";
+                document.getElementById('otp-form').style.display = 'block';
+
+            }, 800);
+        });
+
+        // Handle OTP Step 2 via verifyOTP()
+        function verifyOTP(e) {
+            if (e) e.preventDefault();
+
+            const enteredOTP = document.getElementById('otp-input').value.trim();
+
+            if (enteredOTP !== "987654") {
+                showMessage("Incorrect Verification Code", true);
+                return;
+            }
+
+            // Success: Commit user to localStorage
+            let registeredStudents = JSON.parse(localStorage.getItem("registeredStudents")) || [];
+            registeredStudents.push(pendingUser);
+            localStorage.setItem("registeredStudents", JSON.stringify(registeredStudents));
+
+            // Log user in automatically
+            localStorage.setItem("loggedIn", "true");
+            localStorage.setItem("userLoggedIn", "true");
+            localStorage.setItem("userEmail", pendingUser.email);
+            localStorage.setItem("userName", pendingUser.name);
+            localStorage.setItem("username", pendingUser.name);
+
+            showMessage("Account verified successfully!", false);
+
+            const btn = document.getElementById('verify-btn');
+            btn.innerHTML = '<i class="ph ph-spinner ph-spin" style="animation: spin 1s linear infinite;"></i> Redirecting...';
+            btn.disabled = true;
+
+            setTimeout(() => {
+                window.location.href = 'index.html'; // Redirect to dashboard
+            }, 1000);
+        }
+    </script>
+    <style>
+        @keyframes spin {
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</body>
+
+</html>

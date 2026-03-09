@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LUMEO Admin Panel</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Phosphor Icons for Apple-like minimal icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <style>
+        .admin-layout {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 32px;
+            margin-top: 24px;
+        }
+
+        .admin-section {
+            padding: 32px;
+            border-radius: 32px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .admin-section h3 {
+            font-size: 1.5rem;
+            color: var(--text-main);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .admin-section h3 i {
+            color: var(--accent-blue);
+        }
+
+        .student-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .student-card {
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 20px;
+            padding: 20px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            transition: all 0.3s ease;
+        }
+
+        .student-card:hover {
+            background: rgba(255, 255, 255, 0.8);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
+        }
+
+        .student-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .student-name {
+            font-weight: 600;
+            color: var(--text-main);
+            font-size: 1.1rem;
+        }
+
+        .student-email {
+            color: var(--text-sec);
+            font-size: 0.95rem;
+        }
+
+        .student-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .admin-btn {
+            padding: 10px 20px;
+            border-radius: 100px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+        }
+
+        .btn-approve {
+            background: #34C759;
+            color: white;
+        }
+
+        .btn-approve:hover {
+            background: #2EAF4E;
+            transform: scale(1.05);
+        }
+
+        .btn-reject {
+            background: #FF3B30;
+            color: white;
+        }
+
+        .btn-reject:hover {
+            background: #E0352B;
+            transform: scale(1.05);
+        }
+
+        .btn-revoke {
+            background: #FF9800;
+            color: white;
+        }
+
+        .btn-revoke:hover {
+            background: #E68A00;
+            transform: scale(1.05);
+        }
+
+        .empty-state {
+            padding: 40px;
+            text-align: center;
+            color: var(--text-sec);
+            font-style: italic;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Soft Background Blobs for Glass Effect -->
+    <div class="bg-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <div class="app-container" id="app-dashboard">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-left">
+                <p class="date">Admin Dashboard</p>
+                <h1 class="greeting">LUMEO Admin Panel.</h1>
+            </div>
+            <div class="header-right">
+                <div class="user-action-container">
+                    <a href="login.html" class="back-btn"
+                        style="display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; background: rgba(255,255,255,0.5); backdrop-filter: blur(20px); border-radius: 100px; color: var(--text-main); font-weight: 500; text-decoration: none; box-shadow: 0 4px 12px rgba(0,0,0,0.05); transition: all 0.3s ease;">
+                        <i class="ph ph-sign-out"></i> Exit Admin
+                    </a>
+                </div>
+            </div>
+        </header>
+
+        <main class="dashboard" id="dashboard">
+            <div class="admin-layout reveal-on-scroll visible">
+                <!-- All Registered Users -->
+                <section class="admin-section glass-card">
+                    <h3><i class="ph ph-users"></i> Registered Students</h3>
+                    <p style="color: var(--text-sec); margin-bottom: 16px; font-size: 0.95rem;">Select the specific
+                        subjects each student is permitted to access.</p>
+                    <div class="student-list" id="users-list">
+                        <!-- Injected by JS -->
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Admin Logic -->
+    <script>
+        const allCourses = {
+            "Semester 3 - CSE": [
+                { id: "cses3dms", name: "Discrete Mathematical Structures" },
+                { id: "cses3ds", name: "Data Structures" },
+                { id: "cses3lsd", name: "Logic System Design" },
+                { id: "cses3java", name: "Object Oriented Java" },
+                { id: "cses3se", name: "Sustainable Engineering" }
+            ],
+            "Semester 4 - CSE": [
+                { id: "cses4daa", name: "Design and Analysis of Algorithms" },
+                { id: "cses4os", name: "Operating Systems" },
+                { id: "cses4co", name: "Computer Organization" },
+                { id: "cses4dbms", name: "Database Management Systems" },
+                { id: "cses4se", name: "Software Engineering" }
+            ],
+            "Semester 5 - CSE": [
+                { id: "cses5cn", name: "Computer Networks" },
+                { id: "cses5ss", name: "System Software" },
+                { id: "cses5mss", name: "Management of Software Systems" },
+                { id: "cses5dm", name: "Disaster Management" },
+                { id: "cses5flat", name: "Formal Languages and Automata Theory" },
+                { id: "cses5mpmc", name: "Microprocessors and Microcontrollers" }
+            ],
+            "Semester 6 - CSE": [
+                { id: "cses6cd", name: "Compiler Design" },
+                { id: "cses6ccw", name: "Comprehensive Course Work" },
+                { id: "cses6aad", name: "Algorithm Analysis and Design" },
+                { id: "cses6cgip", name: "Computer Graphics and Image Processing" }
+            ],
+            "Semester 7 - CSE": [
+                { id: "cses7ai", name: "Artificial Intelligence" },
+                { id: "cses7ise", name: "Industrial Safety Engineering" }
+            ],
+            "Semester 8 - CSE": [
+                { id: "cses8dc", name: "Distributed Computing" }
+            ],
+
+            // MECHANICAL ENGINEERING
+            "Semester 1 - ME": [
+                { id: "mes1m1", name: "Mathematics I" },
+                { id: "mes1physics", name: "Physics" },
+                { id: "mes1chem", name: "Chemistry" },
+                { id: "mes1em", name: "Engineering Mechanics" },
+                { id: "mes1intro", name: "Introduction to Mechanical & Civil Engineering" },
+                { id: "mes1python", name: "Algorithmic Thinking with Python" },
+                { id: "mes1workshop", name: "Engineering Workshop / Graphics" }
+            ],
+            "Semester 2 - ME": [
+                { id: "mes2m2", name: "Mathematics II" },
+                { id: "mes2cad", name: "Engineering Graphics / CAD" },
+                { id: "mes2eee", name: "Basic Electrical & Electronics Engineering" },
+                { id: "mes2comp", name: "Programming / Computational Methods" },
+                { id: "mes2physlab", name: "Engineering Physics Lab / Workshop" }
+            ],
+            "Semester 3 - ME": [
+                { id: "mes3mos", name: "Mechanics of Solids" },
+                { id: "mes3thermo", name: "Thermodynamics" },
+                { id: "mes3fm", name: "Fluid Mechanics" },
+                { id: "mes3mms", name: "Metallurgy & Material Science" },
+                { id: "mes3mp", name: "Manufacturing Process" }
+            ],
+            "Semester 4 - ME": [
+                { id: "mes4at", name: "Applied Thermodynamics" },
+                { id: "mes4md", name: "Machine Drawing" },
+                { id: "mes4kom", name: "Kinematics of Machinery" },
+                { id: "mes4fmach", name: "Fluid Machinery" },
+                { id: "mes4mt", name: "Manufacturing Technology" }
+            ],
+            "Semester 5 - ME": [
+                { id: "mes5dom", name: "Dynamics of Machinery" },
+                { id: "mes5dme1", name: "Design of Machine Elements I" },
+                { id: "mes5ht", name: "Heat Transfer" },
+                { id: "mes5mi", name: "Metrology & Instrumentation" },
+                { id: "mes5cadm", name: "Computer Aided Design / Manufacturing" }
+            ],
+            "Semester 6 - ME": [
+                { id: "mes6ddm", name: "Dynamics and Design of Machinery" },
+                { id: "mes6hmt", name: "Heat & Mass Transfer" },
+                { id: "mes6ame", name: "Advanced Manufacturing Engineering" },
+                { id: "mes6iepm", name: "Industrial Engineering / Production Management" }
+            ],
+            "Semester 7 - ME": [
+                { id: "mes7dme2", name: "Design of Machine Elements II" },
+                { id: "mes7rac", name: "Refrigeration & Air Conditioning" },
+                { id: "mes7fem", name: "Finite Element Method" },
+                { id: "mes7mech", name: "Mechatronics" },
+                { id: "mes7proj1", name: "Project Phase I" }
+            ],
+            "Semester 8 - ME": [
+                { id: "mes8ihqe", name: "Industrial Hydraulics / Quality Engineering" },
+                { id: "mes8viva", name: "Comprehensive Viva" },
+                { id: "mes8proj2", name: "Major Project Phase II" }
+            ]
+        };
+
+        document.addEventListener('DOMContentLoaded', renderAdminPanel);
+
+        function renderAdminPanel() {
+            const usersList = document.getElementById('users-list');
+            let registeredStudents = JSON.parse(localStorage.getItem('registeredStudents')) || [];
+
+            usersList.innerHTML = '';
+
+            if (registeredStudents.length === 0) {
+                usersList.innerHTML = '<div class="empty-state">No registered students.</div>';
+                return;
+            }
+
+            registeredStudents.forEach((student, index) => {
+                // Ensure array exists for older registrations
+                const approvedCourses = student.approvedCourses || [];
+
+                // Generate course checkboxes
+                let coursesHTML = '';
+                for (const [semester, courses] of Object.entries(allCourses)) {
+                    coursesHTML += `<div style="margin-bottom: 16px;">
+                        <h5 style="color: var(--text-main); font-size: 0.95rem; margin-bottom: 8px; border-bottom: 1px solid rgba(0,0,0,0.05); padding-bottom: 4px;">${semester}</h5>
+                        <div style="display: flex; flex-direction: column; gap: 6px;">`;
+
+                    courses.forEach(course => {
+                        const isChecked = approvedCourses.includes(course.id) ? 'checked' : '';
+                        coursesHTML += `
+                            <label style="display: flex; align-items: center; gap: 8px; font-size: 0.85rem; color: var(--text-sec); cursor: pointer;">
+                                <input type="checkbox" name="permissions-${student.email}" value="${course.id}" ${isChecked} style="accent-color: var(--accent-blue); transform: scale(1.1); cursor: pointer;">
+                                ${course.name}
+                            </label>
+                        `;
+                    });
+
+                    coursesHTML += `</div></div>`;
+                }
+
+                // Construct full card
+                const safeEmailId = student.email.replace(/[^a-zA-Z0-9]/g, '_');
+                const card = document.createElement('div');
+                card.style.background = 'rgba(255, 255, 255, 0.5)';
+                card.style.borderRadius = '20px';
+                card.style.padding = '24px';
+                card.style.border = '1px solid rgba(255, 255, 255, 0.6)';
+                card.style.display = 'flex';
+                card.style.flexDirection = 'column';
+                card.style.gap = '20px';
+
+                card.innerHTML = `
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div class="student-info">
+                            <span class="student-name" style="font-weight: 600; font-size: 1.15rem;">${student.name}</span>
+                            <span class="student-email" style="color: var(--text-sec); font-size: 0.95rem;">${student.email}</span>
+                        </div>
+                        <button class="admin-btn btn-reject" onclick="deleteStudent('${student.email}')" style="padding: 8px 16px; font-size: 0.85rem;">
+                            <i class="ph ph-trash"></i> Delete User
+                        </button>
+                    </div>
+
+                    <div style="background: rgba(255,255,255,0.4); border-radius: 16px; padding: 20px;">
+                        <h4 style="margin-bottom: 16px; font-size: 1.05rem; display: flex; align-items: center; gap: 8px;"><i class="ph ph-lock-key" style="color: var(--text-sec)"></i> Course Permissions</h4>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; max-height: 400px; overflow-y: auto; padding-right: 12px; margin-bottom: 16px;" id="courses-grid-${safeEmailId}">
+                            ${coursesHTML}
+                        </div>
+                        <div style="text-align: right; border-top: 1px solid rgba(0,0,0,0.05); padding-top: 16px;">
+                            <button class="admin-btn btn-approve" onclick="savePermissions('${student.email}', '${safeEmailId}')" id="save-btn-${safeEmailId}">
+                                <i class="ph ph-floppy-disk"></i> Save Permissions
+                            </button>
+                        </div>
+                    </div>
+                `;
+                usersList.appendChild(card);
+            });
+        }
+
+        function savePermissions(email, safeEmailId) {
+            // Give visual feedback
+            const btn = document.getElementById(`save-btn-${safeEmailId}`);
+            const originalHTML = btn.innerHTML;
+            btn.innerHTML = '<i class="ph ph-spinner ph-spin"></i> Saving...';
+            btn.disabled = true;
+
+            // Collect all checked boxes for this user
+            const checkboxes = document.querySelectorAll(`input[name="permissions-${email}"]:checked`);
+            const approvedCourses = Array.from(checkboxes).map(cb => cb.value);
+
+            // Update local storage
+            let registeredStudents = JSON.parse(localStorage.getItem('registeredStudents')) || [];
+            registeredStudents = registeredStudents.map(s => {
+                if (s.email === email) {
+                    return { ...s, approvedCourses: approvedCourses };
+                }
+                return s;
+            });
+            localStorage.setItem('registeredStudents', JSON.stringify(registeredStudents));
+
+            // Restore visual
+            setTimeout(() => {
+                btn.innerHTML = '<i class="ph ph-check"></i> Saved!';
+                setTimeout(() => {
+                    btn.innerHTML = originalHTML;
+                    btn.disabled = false;
+                }, 2000);
+            }, 600);
+        }
+
+        function deleteStudent(email) {
+            if (confirm("Are you sure you want to permanently delete this user?")) {
+                let registeredStudents = JSON.parse(localStorage.getItem('registeredStudents')) || [];
+                registeredStudents = registeredStudents.filter(s => s.email !== email);
+                localStorage.setItem('registeredStudents', JSON.stringify(registeredStudents));
+                renderAdminPanel();
+            }
+        }
+    </script>
+</body>
+
+</html>

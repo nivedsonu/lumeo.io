@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Learning Premium Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Phosphor Icons for Apple-like minimal icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+</head>
+
+<body>
+    <!-- Soft Background Blobs for Glass Effect -->
+    <div class="bg-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <!-- Premium Learning Experience Section -->
+    <section class="premium-hero-section" id="hero">
+        <div class="premium-hero-content">
+            <h1 class="premium-title"><span class="text-glow-sweep">Illuminate</span> Your Learning Journey</h1>
+            <h2 class="premium-subtitle">Explore high-quality semester-based courses designed to simplify engineering
+                education.</h2>
+            <p class="premium-desc">LUMEO provides structured learning resources, organized semester-wise for multiple
+                engineering departments. Access curated materials, guided lessons, and essential subjects all in one
+                seamless platform.</p>
+        </div>
+
+        <div class="grid-glow-bg">
+            <div class="grid-blob grid-blob-1"></div>
+            <div class="grid-blob grid-blob-2"></div>
+        </div>
+
+        <div class="feature-grid reveal-on-scroll">
+
+            <!-- Feature 1 -->
+            <div class="feature-card glass-card">
+                <div class="feature-icon bg-blue">
+                    <i class="ph ph-books"></i>
+                </div>
+                <h3>Structured Semester Learning</h3>
+                <p>Navigate courses semester-by-semester with a clear and organized learning path.</p>
+            </div>
+
+            <!-- Feature 2 -->
+            <div class="feature-card glass-card">
+                <div class="feature-icon bg-purple">
+                    <i class="ph ph-network"></i>
+                </div>
+                <h3>Multiple Engineering Departments</h3>
+                <p>Access learning materials for CSE, EEE, ECE, ME, CE, and IT disciplines.</p>
+            </div>
+
+            <!-- Feature 3 -->
+            <div class="feature-card glass-card">
+                <div class="feature-icon bg-orange">
+                    <i class="ph ph-medal"></i>
+                </div>
+                <h3>High Quality Course Content</h3>
+                <p>Carefully curated subjects and study resources to help students master essential concepts.</p>
+            </div>
+
+            <!-- Feature 4 -->
+            <div class="feature-card glass-card">
+                <div class="feature-icon bg-green">
+                    <i class="ph ph-layout"></i>
+                </div>
+                <h3>Clean Learning Interface</h3>
+                <p>Enjoy a distraction-free, premium interface designed for focus and productivity.</p>
+            </div>
+
+            <!-- Feature 5 -->
+            <div class="feature-card glass-card">
+                <div class="feature-icon bg-cyan">
+                    <i class="ph ph-cloud"></i>
+                </div>
+                <h3>Accessible Anytime</h3>
+                <p>Study anytime and anywhere through a smooth and responsive web platform.</p>
+            </div>
+
+            <!-- Feature 6 -->
+            <div class="feature-card glass-card">
+                <div class="feature-icon bg-pink">
+                    <i class="ph ph-map-trifold"></i>
+                </div>
+                <h3>Interactive Learning Journey</h3>
+                <p>Experience a visually guided learning system that adapts to your semester progress.</p>
+            </div>
+
+        </div>
+
+        <i class="ph ph-caret-down scroll-indicator" style="margin-top: 60px;"></i>
+    </section>
+
+    <!-- Main Content -->
+    <div class="app-container" id="app-dashboard">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-left">
+                <p class="date">Tuesday, October 24</p>
+                <h1 class="greeting">Good Morning, Alex.</h1>
+            </div>
+            <div class="header-right">
+                <div class="search-bar">
+                    <i class="ph ph-magnifying-glass"></i>
+                    <input type="text" placeholder="Search courses, assignments...">
+                </div>
+                <div class="user-action-container">
+                    <!-- Default Login Icon -->
+                    <a href="login.html" class="login-action" id="login-action">
+                        <i class="ph ph-user-circle"></i>
+                    </a>
+
+                    <!-- Logged-in Profile -->
+                    <div class="profile-action" id="profile-action" style="display: none;">
+                        <div class="profile-pic" id="profile-pic">
+                            <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80"
+                                alt="Profile">
+                        </div>
+
+                        <!-- Dropdown Menu -->
+                        <div class="profile-dropdown" id="profile-dropdown">
+                            <button id="logout-btn">
+                                <i class="ph ph-sign-out"></i> Logout
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Dashboard Area (Department Selection) -->
+        <main class="dashboard" id="dashboard">
+            <div class="section-title" style="justify-content: center; text-align: center; margin-bottom: 48px;">
+                <h2 id="semester-title" style="font-size: 2rem;">Semester 1</h2>
+            </div>
+
+            <!-- Department Cards Grid -->
+            <div class="dept-grid" id="dept-grid">
+                <!-- Cards injected via JS -->
+            </div>
+        </main>
+    </div>
+
+    <!-- Apple iOS Style Floating Dock (Hidden initially) -->
+    <nav class="dock-container hidden" id="dock-container">
+        <ul class="dock" id="dock">
+            <li class="dock-item active" data-semester="1">S1</li>
+            <li class="dock-item" data-semester="2">S2</li>
+            <li class="dock-item" data-semester="3">S3</li>
+            <li class="dock-item" data-semester="4">S4</li>
+            <li class="dock-item" data-semester="5">S5</li>
+            <li class="dock-item" data-semester="6">S6</li>
+            <li class="dock-item" data-semester="7">S7</li>
+            <li class="dock-item" data-semester="8">S8</li>
+        </ul>
+    </nav>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
